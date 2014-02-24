@@ -1,0 +1,30 @@
+{
+  "name": "koa-session-redis",
+  "description": "Koa redis session middleware",
+  "repository": "Chilledheart/koa-session-redis",
+  "version": "1.0.0",
+  "keywords": [
+    "koa",
+    "middleware",
+    "session"
+  ],
+  "files": [
+    "index.js"
+  ],
+  "devDependencies": {
+    "koa": "*",
+    "mocha": "*",
+    "should": "*",
+    "supertest": "*"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "debug": "*",
+    "uid2": "0.0.3",
+    "thunkify": "0.0.1",
+    "redis": "~0.10.1"
+  },
+  "scripts": {
+    "test": "make test"
+  }
+}

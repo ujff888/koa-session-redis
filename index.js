@@ -3,7 +3,7 @@
  * Module dependencies.
  */
 
-var debug = require('debug')('koa.session'),
+var debug = require('debug')('koa-session-redis'),
     uid = require('uid2'),
     thunkify = require('thunkify'),
     redis = require('redis');
@@ -22,33 +22,58 @@ module.exports = function (opts) {
   var key, client, redisOption, cookieOption;
 
   opts = opts || {};
-  debug('session options %j', opts);
+  // key
+  key = opts.key || 'koa:sess';
+  debug('key config is: %s', key);
 
   //cookies opts
   cookieOption = opts.cookie || {};
+  debug('cookie config all: %j', cookieOption);
+  debug('cookie config overwrite: %s', (cookieOption.overwrite === false) ? false : (cookieOption.overwrite = true));
+  debug('cookie config httpOnly: %s', (cookieOption.httpOnly === false) ? false : (cookieOption.httpOnly = true));
+  debug('cookie config signed: %s', (cookieOption.signed === false) ? false : (cookieOption.signed = true));
 
   //redis opts
   redisOption = opts.store || {};
-  // key
-  key = opts.key || 'koa:sess';
+  debug('redis config all: %j', redisOption);
+  debug('redis config port: %s', redisOption.port || (redisOption.port = 6379));
+  debug('redis config host: %s', redisOption.host || (redisOption.host = '127.0.0.1'));
+  debug('redis config options: %j', redisOption.options || (redisOption.options = {}));
+  debug('redis config db: %s', redisOption.db || (redisOption.db = 0)); //TODO: switch to another db
+  debug('redis config ttl: %s', redisOption.ttl || (redisOption.ttl = null)); //TODO: ttl feature
 
-  //persistent client for session
+  //redis client for session
   client = redis.createClient(
     redisOption.port,
     redisOption.host,
     redisOption.options
   );
-
-  //TODO:redisOpts.db
-
   client.get = thunkify(client.get);
-  client.set = thunkify(client.set); //TODO:redisOpts ttl
+  client.set = thunkify(client.set);
   client.del = thunkify(client.del);
 
-  // defaults of cookies
-  if (null == cookieOption.overwrite) cookieOption.overwrite = true;
-  if (null == cookieOption.httpOnly) cookieOption.httpOnly = true;
-  if (null == cookieOption.signed) cookieOption.signed = true;
+  client.on('connect', function () {
+    debug('redis is connecting');
+  });
+
+  client.on('ready', function () {
+    debug('redis ready');
+    debug('redis host: %s', client.host);
+    debug('redis port: %s', client.port);
+    debug('redis parser: %s', client.reply_parser.name);
+  });
+
+  client.on('reconnect', function () {
+    debug('redis is reconnecting');
+  });
+
+  client.on('error', function (err) {
+    debug('redis encouters error: %j', err);
+  });
+
+  client.on('end', function () {
+    debug('redis connection ended');
+  });
 
   return function *(next) {
     var sess, sid, json, err;

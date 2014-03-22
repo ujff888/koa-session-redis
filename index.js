@@ -76,7 +76,7 @@ module.exports = function (opts) {
   });
 
   return function *(next) {
-    var sess, sid, json, err;
+    var sess, sid, json;
 
     // to pass to Session()
     this.cookieOption = cookieOption;
@@ -130,26 +130,23 @@ module.exports = function (opts) {
 
     try {
       yield *next;
-    } catch (_err) {
-      err = _err;
+    } catch (err) {
+      throw err;
+    } finally {
+      if (undefined === sess) {
+        // not accessed
+      } else if (false === sess) {
+        // remove
+        this.cookies.set(key, '', cookieOption);
+        yield client.del(sid);
+      } else if (!json && !sess.length) {
+        // do nothing if new and not populated
+      } else if (sess.changed(json)) {
+        // save
+        json = sess.save();
+        yield client.set(sid, json);
+      }
     }
-
-    if (undefined === sess) {
-      // not accessed
-    } else if (false === sess) {
-      // remove
-      this.cookies.set(key, '', cookieOption);
-      yield client.del(sid);
-    } else if (!json && !sess.length) {
-      // do nothing if new and not populated
-    } else if (sess.changed(json)) {
-      // save
-      json = sess.save();
-      yield client.set(sid, json);
-    }
-
-    // rethrow any downstream errors
-    if (err) throw err;
   };
 };
 

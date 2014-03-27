@@ -32,6 +32,7 @@ module.exports = function (opts) {
   debug('cookie config overwrite: %s', (cookieOption.overwrite === false) ? false : (cookieOption.overwrite = true));
   debug('cookie config httpOnly: %s', (cookieOption.httpOnly === false) ? false : (cookieOption.httpOnly = true));
   debug('cookie config signed: %s', (cookieOption.signed === false) ? false : (cookieOption.signed = true));
+  debug('cookie config maxage: %s', (typeof cookieOption.maxage !== 'undefined') ? cookieOption.maxage : (cookieOption.maxage = redisOption.ttl * 1000 || null));
 
   //redis opts
   redisOption = opts.store || {};

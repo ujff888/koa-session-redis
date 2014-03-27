@@ -50,7 +50,7 @@ module.exports = function (opts) {
   );
 
   client.select(redisOption.db, function () {
-    debug('redis changed to db %i', redisOption.db);
+    debug('redis changed to db %d', redisOption.db);
   });
 
   client.get = thunkify(client.get);

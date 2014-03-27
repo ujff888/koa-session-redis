@@ -26,14 +26,6 @@ module.exports = function (opts) {
   key = opts.key || 'koa:sess';
   debug('key config is: %s', key);
 
-  //cookies opts
-  cookieOption = opts.cookie || {};
-  debug('cookie config all: %j', cookieOption);
-  debug('cookie config overwrite: %s', (cookieOption.overwrite === false) ? false : (cookieOption.overwrite = true));
-  debug('cookie config httpOnly: %s', (cookieOption.httpOnly === false) ? false : (cookieOption.httpOnly = true));
-  debug('cookie config signed: %s', (cookieOption.signed === false) ? false : (cookieOption.signed = true));
-  debug('cookie config maxage: %s', (typeof cookieOption.maxage !== 'undefined') ? cookieOption.maxage : (cookieOption.maxage = redisOption.ttl * 1000 || null));
-
   //redis opts
   redisOption = opts.store || {};
   debug('redis config all: %j', redisOption);
@@ -42,6 +34,14 @@ module.exports = function (opts) {
   debug('redis config options: %j', redisOption.options || (redisOption.options = {}));
   debug('redis config db: %s', redisOption.db || (redisOption.db = 0));
   debug('redis config ttl: %s', redisOption.ttl);
+
+  //cookies opts
+  cookieOption = opts.cookie || {};
+  debug('cookie config all: %j', cookieOption);
+  debug('cookie config overwrite: %s', (cookieOption.overwrite === false) ? false : (cookieOption.overwrite = true));
+  debug('cookie config httpOnly: %s', (cookieOption.httpOnly === false) ? false : (cookieOption.httpOnly = true));
+  debug('cookie config signed: %s', (cookieOption.signed === false) ? false : (cookieOption.signed = true));
+  debug('cookie config maxage: %s', (typeof cookieOption.maxage !== 'undefined') ? cookieOption.maxage : (cookieOption.maxage = redisOption.ttl * 1000 || null));
 
   //redis client for session
   client = redis.createClient(

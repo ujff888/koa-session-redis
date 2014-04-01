@@ -19,13 +19,20 @@ Set your redis connection configuration in options.store
   example (using redis without specific configuration)
 
 ```js
-var session = require('koa.session');
+var session = require('koa-session-redis');
 
 var koa = require('koa');
 var app = koa();
 
 app.keys = ['some secret hurr'];
-app.use(session());
+app.use(session({
+    store: {
+      host: process.env.SESSION_PORT_6379_TCP_ADDR || '127.0.0.1',
+      port: process.env.SESSION_PORT_6379_TCP_PORT || 6379,
+      ttl: 3600,
+    },
+  },
+));
 
 app.use(function *(){
   var n = this.session.views || 0;

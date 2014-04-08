@@ -1,6 +1,7 @@
 version 1.1.0
 ===
 add select db support and ttl support
+remove unnecessary base64 encoding
 
 version 1.0.1
 ===

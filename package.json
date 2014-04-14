@@ -21,7 +21,7 @@
   "dependencies": {
     "debug": "*",
     "uid2": "0.0.3",
-    "thunkify": "0.0.1",
+    "thunkify": "~1.0.0",
     "redis": "~0.10.1"
   },
   "scripts": {

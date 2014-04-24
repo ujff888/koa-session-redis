@@ -2,7 +2,7 @@
   "name": "koa-session-redis",
   "description": "Koa redis session middleware",
   "repository": "Chilledheart/koa-session-redis",
-  "version": "1.1.0-rc5",
+  "version": "1.1.0-rc6",
   "keywords": [
     "koa",
     "middleware",
